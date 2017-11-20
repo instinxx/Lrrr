@@ -14,7 +14,7 @@ gulp.task('default', ['sass', 'jade']);
 gulp.task( 'jade', function (done) {
   gulp.src( paths.jade )
     .pipe( jade() )
-    .pipe( gulp.dest( './www/' ) )
+    .pipe( gulp.dest( './www/templates/' ) )
     .on( 'end', done );
 } );
 

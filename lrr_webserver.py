@@ -72,8 +72,14 @@ class JsonHandler(tornado.web.RequestHandler):
 
         response = []
         with open(CSV_FILE) as cards_file:
+            i = 0
             for line in cards_file:
-                # next(cards_file)
+                if i == 0:
+                    i += 1
+                    continue
+                else:
+                    i += 1
+
                 cols = line.rstrip('\n').split(',')
                 cred = {
                     'id':                   cols[0],
