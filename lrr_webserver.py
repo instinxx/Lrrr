@@ -4,6 +4,7 @@
 # By: Dennis Linuz <dennismald@gmail.com>
 #
 #############################################################################
+import json
 
 import tornado.websocket
 import tornado.httpserver
@@ -13,112 +14,10 @@ import os
 import csv
 
 CSV_FILE = "cards.csv"
-PORT = 80
+PORT = 8080
 Listeners = []
 
-HTML = """
-<!DOCTYPE>
-<html>
-<head>
-    <title>Credentials Scanned</title>
-    <style>
-        #credentials {
-            font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-            border-collapse: collapse;
-            width: 100%%;
-        }
-
-        #credentials td, #credentials th {
-            border: 1px solid #ddd;
-            padding: 8px;
-        }
-
-        #credentials tr:nth-child(even){background-color: #f2f2f2;}
-
-        #credentials tr:hover {background-color: #ddd;}
-
-        #credentials th {
-            padding-top: 12px;
-            padding-bottom: 12px;
-            text-align: left;
-            background-color: #4CAF50;
-            color: white;
-        }
-    </style>
-    </head>
-<body>
-<div id="links">
-    <a href="./cards.csv">Download CSV</a>&nbsp;&nbsp;&nbsp;&nbsp;
-    <a href="#" onclick="confirm('Are you sure you want to clear cards.csv?')?document.location.href='./clearcsv':null;">Clear CSV</a>&nbsp;&nbsp;&nbsp;&nbsp;
-</div>
-<div id="file">
-    <table id=credentials>
-        <tr>
-            <th>ID</th>
-            <th>Bit Length</th>
-            <th>Wiegand Binary</th>
-            <th>Wiegand Hex Data</th>
-            <th>iCLASS Standard Encrypted Hex Data</th>
-            <th>Facility Code</th>
-            <th>Card Number</th>
-            <th>Card Number without Facility Code</th>
-        </tr>
-    </table>
-</div>
-
-    <script type="text/javascript" charset="utf-8">
-        var credential;
-        function parseCredential(line) {
-            credential = line.split(",");
-            write_data(credential)
-        }
-
-        function write_data(credential) {
-            var id = credential[0];
-            var bits = credential[1];
-            var wiegand_binary = credential[2];
-            var wiegand_hex = credential[3];
-            var iclass_std_enc_hex = credential[4];
-            var fac_code = credential[5];
-            var card_num = credential[6];
-            var card_num_no_fac = credential[7];
-            var table = document.getElementById("credentials");
-            var row = table.insertRow(1);
-            var cell01 = row.insertCell(-1);
-            var cell02 = row.insertCell(-1);
-            var cell03 = row.insertCell(-1);
-            var cell04 = row.insertCell(-1);
-            var cell05 = row.insertCell(-1);
-            var cell06 = row.insertCell(-1);
-            var cell07 = row.insertCell(-1);
-            var cell08 = row.insertCell(-1);
-            cell01.innerHTML = id;
-            cell02.innerHTML = bits;
-            cell03.innerHTML = wiegand_binary;
-            cell04.innerHTML = wiegand_hex;
-            cell05.innerHTML = iclass_std_enc_hex;
-            cell06.innerHTML = fac_code;
-            cell07.innerHTML = card_num;
-            cell08.innerHTML = card_num_no_fac;
-        }
-        if ("MozWebSocket" in window) {
-            WebSocket = MozWebSocket;
-        }
-        if (WebSocket) {
-            var ws = new WebSocket("ws://%s/ws");
-            ws.onopen = function() {};
-            ws.onmessage = function (evt) {
-                parseCredential(evt.data);
-            };
-            ws.onclose = function() {};
-        } else {
-            alert("WebSocket not supported");
-        }
-    </script>
-    </table>
-</body>
-</html>
-"""
+HTML = open('creds.html', 'rt').read()
 
 cards_file = open(CSV_FILE)
 cards_file.seek(os.path.getsize(CSV_FILE))
@@ -159,6 +58,37 @@ class IndexHandler(tornado.web.RequestHandler):
     def get(self):
         self.write(HTML % (self.request.host))
 
+class JsonHandler(tornado.web.RequestHandler):
+    # support CORS
+    def set_default_headers(self):
+        print "setting headers!!!"
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+
+    def get(self):
+        self.set_header('Content-Type', 'application/json')
+        self.set_header('Access-Control-Allow-Origin', '*')
+
+        response = []
+        with open(CSV_FILE) as cards_file:
+            for line in cards_file:
+                # next(cards_file)
+                cols = line.rstrip('\n').split(',')
+                cred = {
+                    'id':                   cols[0],
+                    'bit_length':           cols[1],
+                    'wiegand_binary':       cols[2],
+                    'wiegand_hex':          cols[3],
+                    'iclass_std_enc_hex':   cols[4],
+                    'fac_code':             cols[5],
+                    'card_num':             cols[6],
+                    'card_num_no_fac':      cols[7]
+                }
+                response.append(cred)
+        self.write(json.dumps(response))
+
+
 class CSVDownloadHandler(tornado.web.RequestHandler):
     def get(self):
         self.set_header('Content-Type', 'application/octet-stream')
@@ -183,7 +113,8 @@ application = tornado.web.Application([
     (r'/ws', CredentialHandler),
     (r'/', IndexHandler),
     (r'/clearcsv', ClearCSV),
-    (r'/cards.csv', CSVDownloadHandler)
+    (r'/cards.csv', CSVDownloadHandler),
+    (r'/json', JsonHandler)
 ])
 
 http_server = tornado.httpserver.HTTPServer(application)
