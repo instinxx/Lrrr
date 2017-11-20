@@ -52,8 +52,54 @@ angular.module('lrr.controllers', ['lrr.services'])
         console.log(resp);
       })
     }
+  }
+})
+
+.controller('AuthCtrl', function($scope, LocalStorage, API) {
+  console.log('AuthCtrl');
+
+  $scope.auth = {
+    username: null,
+    email: null,
+    password: null,
+  };
 
 
+  function success(resp) {
+    if(resp.data && resp.data.key) {
+      LocalStorage.set('token',resp.data.key);
+    } else {
+      $scope.autherr = "Invalid login";
+      console.log(resp);
+    }
+  }
 
+  function err(resp) {
+    console.log(resp);
+    if(resp.status == 401) {
+      LocalStorage.remove('token');
+      $scope.loggedin = false;
+    } else {
+      $scope.autherr = "Invalid Login";
+    }
+    
+  }
+
+  $scope.loggedin = false;
+  var do_login = function() {
+    API.post(API.upload_endpoint + '/rest-auth/login/', $scope.auth, success, err);
+  };
+
+  var do_logout = function() {
+    API.post(API.upload_endpoint + '/rest-auth/logout/', {token: Session.get('token',null)}, loggedout, err);
+  }
+
+  $scope.login = function() {
+    $scope.auth.email = $scope.auth.username; 
+    do_login();
+  }
+
+  $scope.logout = function() {
+    do_logout();
   }
 });

@@ -50,16 +50,17 @@ angular.module('lrr', ['ionic', 'lrr.controllers', 'lrr.services'])
           controller: 'UploadCtrl'
         }
       }
-    })
-    // .state('app.playlists', {
-    //   url: '/playlists',
-    //   views: {
-    //     'menuContent': {
-    //       templateUrl: 'templates/playlists.html',
-    //       controller: 'PlaylistsCtrl'
-    //     }
-    //   }
-    // })
+  })
+
+  .state('app.auth', {
+    url: '/auth',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/auth.html',
+        controller: 'AuthCtrl'
+      }
+    }
+  })
 
   // .state('app.single', {
   //   url: '/playlists/:playlistId',

@@ -43,7 +43,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'rest_framework',
+    'rest_framework.authtoken',
+    'rest_auth',
+    'allauth',
+    'allauth.account',
     'corsheaders',
     'creds',
 
@@ -133,3 +138,34 @@ STATIC_URL = '/static/'
 
 # CORS
 CORS_ORIGIN_ALLOW_ALL = True
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
+    )
+}
+
+# rest-auth and allauth Configuration
+ACCOUNT_AUTHENTICATION_METHOD = 'username'
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_USERNAME_REQUIRED = True
+OLD_PASSWORD_FIELD_ENABLED = False # maybe change this when we require old pw for password change
+LOGOUT_ON_PASSWORD_CHANGE = False
+ACCOUNT_PASSWORD_MIN_LENGTH = 6 # this is a deprecated feature
+DEFAULT_FROM_EMAIL='donotreply@example.com'
+
+REST_AUTH_SERIALIZERS = {
+    'PASSWORD_RESET_SERIALIZER': 'accounts.serializers.PasswordResetSerializer'
+}
+
+# Following is added to enable registration with email instead of username
+AUTHENTICATION_BACKENDS = (
+ # Needed to login by username in Django admin, regardless of `allauth`
+ "django.contrib.auth.backends.ModelBackend",
+
+ # `allauth` specific authentication methods, such as login by e-mail
+ "allauth.account.auth_backends.AuthenticationBackend",
+)
+
+SITE_ID = 1 # this will make django.contrib.sites work for allauth.account.
