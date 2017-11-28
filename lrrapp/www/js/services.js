@@ -24,22 +24,32 @@ angular.module('lrr.services', [])
   }
 })
 
-.factory('API', function($http) {
+.factory('API', function($http, LocalStorage) {
   var lrr_endpoint = "http://127.0.0.1:8080";
   var upload_endpoint = "http://127.0.0.1:8000";
   
+  function get_config() {
+    var config = {};
+    if(LocalStorage.get('token', null)) {
+      config.headers = {
+        Authorization: "Token " + LocalStorage.get('token')
+      };
+    }
+    return config;
+  }
+
   return {
     get: function(url, success, err) {
-      $http.get(url).then(success, err);
+      $http.get(url, get_config()).then(success, err);
     },
     post: function(url, data, success, err) {
-      $http.post(url, data).then(success, err);
+      $http.post(url, data, get_config()).then(success, err);
     },
     put: function(url, data, success, err) {
-      $http.put(url, data).then(success, err);
+      $http.put(url, data, get_config()).then(success, err);
     },
     delete: function(url, success, err) {
-      $http.delete(url).then(success, err);
+      $http.delete(url, get_config()).then(success, err);
     },
     lrr_endpoint: lrr_endpoint,
     upload_endpoint: upload_endpoint

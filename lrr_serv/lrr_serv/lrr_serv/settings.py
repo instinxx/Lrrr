@@ -47,8 +47,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
-    'allauth',
-    'allauth.account',
+    # 'allauth',
+    # 'allauth.account',
     'corsheaders',
     'creds',
 
@@ -155,9 +155,6 @@ LOGOUT_ON_PASSWORD_CHANGE = False
 ACCOUNT_PASSWORD_MIN_LENGTH = 6 # this is a deprecated feature
 DEFAULT_FROM_EMAIL='donotreply@example.com'
 
-REST_AUTH_SERIALIZERS = {
-    'PASSWORD_RESET_SERIALIZER': 'accounts.serializers.PasswordResetSerializer'
-}
 
 # Following is added to enable registration with email instead of username
 AUTHENTICATION_BACKENDS = (

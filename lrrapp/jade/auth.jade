@@ -6,9 +6,15 @@ ion-view(view-title="Login")
         div(ng-show="!loggedin")
             div.list
                 label.item.item-input
-                    input(type="text", autocomplete="off", autocapitalize="off", ng-model="auth.email", placeholder="Username")
+                    input(type="text", autocomplete="off", autocapitalize="off", ng-model="auth.username", placeholder="Username")
+                label.item.item-input
+                    input(type="email", autocomplete="off", autocapitalize="off", ng-model="auth.email", placeholder="Email")
                 label.item.item-input
                     input(type="password", ng-model="auth.password", placeholder="Password", autocapitalize="off", autocomplete="off")
                 button.button.button-positive.button-block(ng-click="login()") Login
             div.text-center.text-danger
                 {{ autherr }}
+        div(ng-show="loggedin")
+            button.button.button-assertive.button-block(ng-click="logout()", ng-show="!confirming") Logout
+            button.button.button-assertive.button-block(ng-click="do_confirm_logout()", ng-show="confirming") Are you Sure?
+            button.button.button-positive.button-block(ng-click="cancel()", ng-show="confirming") Cancel
