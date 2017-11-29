@@ -1,13 +1,7 @@
 .idea
-bin
-lib
-include
-pip-selfcheck.json
-.Python
 cards.csv
 DEFCON - Long Range Reader.pptx
 db.sqlite3
-manage.py
 *.pyc
 .env
 endpoint.js
