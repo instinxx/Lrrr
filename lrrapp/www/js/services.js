@@ -1,4 +1,4 @@
-angular.module('lrr.services', [])
+angular.module('lrr.services', ['lrr.endpoint'])
 
 .factory('LocalStorage', function($window) {
   return {
@@ -24,9 +24,10 @@ angular.module('lrr.services', [])
   }
 })
 
-.factory('API', function($http, LocalStorage) {
-  var lrr_endpoint = "http://127.0.0.1:8080";
-  var upload_endpoint = "http://127.0.0.1:8000";
+.factory('API', function($http, LocalStorage, Endpoint) {
+  var lrr_endpoint = "http://192.168.3.1";
+  var upload_endpoint = Endpoint.endpoint;
+  console.log(upload_endpoint);
   
   function get_config() {
     var config = {};

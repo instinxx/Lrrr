@@ -10,3 +10,4 @@ db.sqlite3
 manage.py
 *.pyc
 .env
+endpoint.js
