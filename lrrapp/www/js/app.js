@@ -62,6 +62,16 @@ angular.module('lrr', ['ionic', 'lrr.controllers', 'lrr.services', 'lrr.endpoint
     }
   })
 
+  .state('app.shutdown', {
+    url: '/shutdown',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/shutdown.html',
+        controller: 'ShutdownCtrl'
+      }
+    }
+  })
+
   // .state('app.single', {
   //   url: '/playlists/:playlistId',
   //   views: {

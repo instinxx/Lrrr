@@ -150,4 +150,33 @@ angular.module('lrr.controllers', ['lrr.services'])
   }
 
   is_logged_in();
-});
+})
+
+.controller('ShutdownCtrl', function($scope, API) {
+  $scope.confirming = false;
+  $scope.loading = false;
+
+  $scope.request_shutdown = function() {
+    $scope.confirming = true;
+  }
+
+  $scope.cancel_shutdown = function() {
+    $scope.confirming = false;
+  }
+
+  $scope.do_shutdown = function() {
+    $scope.loading = true;
+    API.get(API.lrr_endpoint + '/shutdown', 
+      function(resp) {
+        $scope.msg = "Shutting down...";
+        $scope.loading = false;
+      },
+      function(resp) {
+        console.log(resp);
+        $scope.msg = "Failed to shutdown";
+        $scope.loading = false;
+      }
+    );
+  }
+})
+;

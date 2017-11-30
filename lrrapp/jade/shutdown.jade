@@ -1,0 +1,8 @@
+ion-view(view-title="Login")
+    ion-content
+        .text-center
+            ion-spinner(ng-show="loading")
+            p {{ msg }}
+        button.button.button-assertive.button-block(ng-click="request_shutdown()", ng-show="!confirming") Shutdown
+        button.button.button-positive.button-block(ng-show="confirming", ng-click="cancel_shutdown()") Cancel
+        button.button.button-assertive.button-block(ng-show="confirming", ng-click="do_shutdown()") Shutdown
