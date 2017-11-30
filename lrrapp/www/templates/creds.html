@@ -1,1 +1,1 @@
-<ion-view view-title="Creds"><ion-content><ion-list><div ng-repeat="cred in creds" class="item"><p>{{ cred.wiegand_hex }}</p></div></ion-list></ion-content></ion-view>
+<ion-view view-title="Creds"><ion-content><ion-list><div class="text-center"><ion-spinner ng-show="loading"></ion-spinner><p>{{ msg }}</p></div><button ng-click="reload()" class="button button-positive button-block">Reload</button><div ng-repeat="cred in creds" class="item"><p>{{ cred.wiegand_hex }}</p></div></ion-list></ion-content></ion-view>

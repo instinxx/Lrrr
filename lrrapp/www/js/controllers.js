@@ -15,17 +15,32 @@ angular.module('lrr.controllers', ['lrr.services'])
 .controller('CredsCtrl', function($scope, API, LocalStorage) {
   console.log('CredsCtrl');
   $scope.creds = [];
-  API.get(API.lrr_endpoint + '/json', function(resp) {
-    console.log(resp);
-    if(resp.data) {
-      $scope.creds = resp.data;
-      LocalStorage.setObject('creds', $scope.creds);
-    }
-  },
-  function(resp) {
-    console.log("Failure");
-    console.log(resp);
-  })
+  $scope.loading = false;
+
+  function load() {
+    $scope.loading = true;
+    API.get(API.lrr_endpoint + '/json', function(resp) {
+      console.log(resp);
+      if(resp.data) {
+        $scope.creds = resp.data;
+        LocalStorage.setObject('creds', $scope.creds);
+        $scope.loading = false;
+        $scope.msg = "Load successful";
+      }
+    },
+    function(resp) {
+      console.log("Failure");
+      console.log(resp);
+      $scope.loading = false;
+      $scope.msg = "Failed to Load";
+    });
+  }
+
+  $scope.reload = function() {
+    load();
+  }
+
+  load();
 })
 
 
@@ -46,10 +61,14 @@ angular.module('lrr.controllers', ['lrr.services'])
           API.post(API.upload_endpoint + '/creds/', $scope.creds[i], 
       function(resp) {
         console.log(resp);
+        $scope.uploading = false;
+        $scope.msg = "Upload successful";
       },
       function(resp) {
         console.log("Failure");
         console.log(resp);
+        $scope.uploading = false;
+        $scope.msg = "Failed to upload";
       })
     }
   }

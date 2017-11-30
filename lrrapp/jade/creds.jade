@@ -1,5 +1,9 @@
 ion-view(view-title="Creds")
     ion-content
         ion-list
+            .text-center
+                ion-spinner(ng-show="loading")
+                p {{ msg }}
+            button.button.button-positive.button-block(ng-click="reload()") Reload
             .item(ng-repeat="cred in creds")
                 p {{ cred.wiegand_hex }}

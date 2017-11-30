@@ -26,6 +26,7 @@ angular.module('lrr.services', ['lrr.endpoint'])
 
 .factory('API', function($http, LocalStorage, Endpoint) {
   var lrr_endpoint = "http://192.168.3.1";
+  // lrr_endpoint = "http://192.168.0.105:8080";
   var upload_endpoint = Endpoint.endpoint;
   console.log(upload_endpoint);
   

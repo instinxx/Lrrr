@@ -3,7 +3,7 @@ ion-view(view-title="Upload")
         .text-center
             ion-spinner(ng-show="uploading").text-center
             button(ng-click="upload()").button.button-positive.button-block Upload
-            p(ng-show="uploaded") Done!
+            {{ msg }}
 
         ion-list
             .item(ng-repeat="cred in creds track by $index")
