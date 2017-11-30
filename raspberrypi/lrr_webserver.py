@@ -58,6 +58,17 @@ class IndexHandler(tornado.web.RequestHandler):
     def get(self):
         self.write(HTML % (self.request.host))
 
+class ShutdownHandler(tornado.web.RequestHandler):
+    # support CORS
+    def set_default_headers(self):
+        print "setting headers!!!"
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET, OPTIONS')
+
+    def get(self):
+        os.system("shutdown now")
+
 class JsonHandler(tornado.web.RequestHandler):
     # support CORS
     def set_default_headers(self):
@@ -120,7 +131,8 @@ application = tornado.web.Application([
     (r'/', IndexHandler),
     (r'/clearcsv', ClearCSV),
     (r'/cards.csv', CSVDownloadHandler),
-    (r'/json', JsonHandler)
+    (r'/json', JsonHandler),
+    (r'/shutdown', ShutdownHandler)
 ])
 
 http_server = tornado.httpserver.HTTPServer(application)
